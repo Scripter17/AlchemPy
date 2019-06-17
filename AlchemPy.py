@@ -42,9 +42,16 @@ def clear():
 data=open("Recipes.dat", "r").read()
 elements, recipes=tuple(data.split("\n-\n"))
 elements=elements.split("\n")
-r={}
+r=[]
+rkeys=[]
 for x in recipes.split("\n"):
-	r[x.split("=")[0]]=x.split("=")[1] # {"earth+air":"dust"}
+	com=set(x.split("=")[0].split("+"))
+	res=[x.split("=")[1]]
+	if com in rkeys:
+		r[[x[0] for x in r].index(com)][1].append(res[0])
+	else:
+		rkeys.append(com)
+		r.append([com, res]) # [[{"earth, air"},["dust"]]...]
 recipes=r
 
 print("""\033[2J\033[H
@@ -66,6 +73,7 @@ ePerPage=8 # How many elements to list per page
 txt=""
 cin=""
 cin2=""
+new=""
 while True:
 	#print(elements)
 	#print(recipes)
@@ -78,8 +86,11 @@ while True:
 	# If I do print(txt, end=""), the text will appear at the top for some unknown reason
 	# TODO: Fix this
 	print(txt)
+	if new!="":
+		print("Discovered "+new+"\033[1A")
 	print("\033[1A\033["+str(len(txt))+"C",end="")
 	cin=msvcrt.getch()
+	new=""
 	if cin==b"\xe0": # The user pressed an arrow key
 		cin2=msvcrt.getch()
 		if cin2==b"K": # The user pressed left
@@ -90,15 +101,22 @@ while True:
 		txt=txt[:-1]
 	elif cin==b"\r": # Enter
 		com=txt.lower()
-		if (com not in recipes) and ("+".join(com.split("+")[::-1]) in recipes):
+		"""if (com not in recipes) and ("+".join(com.split("+")[::-1]) in recipes):
 			# If a+b isn't a recipe, but b+a is, do b+a
 			# earth+air = air+earth
 			com="+".join(com.split("+")[::-1])
 		if com in recipes and com.split("+")[0] in elements and com.split("+")[1] in elements:
 			# Append to discovered elements
-			elements.append(recipes[com])
-		elif com=="exit":
+			elements.append(recipes[com])"""
+		if com=="exit":
 			exit()
+		else:
+			com=set(com.split("+"))
+			for x in recipes:
+				if x[0]==com:
+					new=", ".join(x[1])
+					for y in x[1]:
+						elements.append(y)
 		txt=""
 	else:
 		allowedChars="abcdefghijklmnopqrstuvwxyz+- "

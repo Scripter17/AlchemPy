@@ -1,2 +1,5 @@
 demo.mp4 
 demo.ahk
+build/
+__pycache__/
+*.spec
