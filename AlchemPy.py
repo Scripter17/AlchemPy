@@ -69,7 +69,8 @@ cin2=""
 while True:
 	#print(elements)
 	#print(recipes)
-	print("Page "+str(dispPage+1)+"/"+str(len(elements)//ePerPage+1))
+	pages=(len(elements)-1)//ePerPage
+	print("Page "+str(dispPage+1)+"/"+str(pages+1))
 	plist=[x.capitalize() for x in elements[dispPage*ePerPage:(dispPage+1)*ePerPage]]
 	print("---")
 	print("\n".join(plist)+"\n"*(ePerPage-len(plist)))
@@ -84,7 +85,7 @@ while True:
 		if cin2==b"K": # The user pressed left
 			dispPage=max(dispPage-1, 0)
 		elif cin2==b"M": # The user pressed right
-			dispPage=min(dispPage+1, len(elements)//ePerPage)
+			dispPage=min(dispPage+1, pages)
 	elif cin==b"\x08": # Backspace
 		txt=txt[:-1]
 	elif cin==b"\r": # Enter
